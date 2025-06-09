@@ -26,13 +26,20 @@ def get_government_members(government_wikidata_id, max_members=None) -> List[Gov
     language = 'nl'
     parts = wikidata.WikidataItem(government_wikidata_id).get_parts()
     members = []
-    for part in parts:
-        member = create_government_member(part, language)
-        logger.info(member.name)
-        logger.info(json.dumps(member.__dict__, sort_keys=True, default=str))
-        members.append(member)
-        if max_members and len(members) >= max_members:
-            break
+    
+    # --- Start of the fix ---
+    # Add a check to ensure 'parts' is not None before trying to loop over it.
+    # This prevents a crash if the Wikidata API returns an empty or unexpected result for a government.
+    if parts:
+        for part in parts:
+            member = create_government_member(part, language)
+            logger.info(member.name)
+            logger.info(json.dumps(member.__dict__, sort_keys=True, default=str))
+            members.append(member)
+            if max_members and len(members) >= max_members:
+                break
+    # --- End of the fix ---
+
     logger.info('END')
     return members
 
