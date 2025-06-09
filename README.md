@@ -102,9 +102,6 @@ A mandatory fix is required to handle changes in the live Wikidata API.
 1.  **Open the file:** `wikidata/government.py`.
 2.  **Replace** the entire `get_government_members` function with the code below to prevent crashes from empty API responses.
 
-\<details\>
-\<summary\>Click to expand code for the corrected function.\</summary\>
-
 ```python
 def get_government_members(government_wikidata_id, max_members=None) -> List[GovernmentMemberData]:
     logger.info('BEGIN')
