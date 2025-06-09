@@ -120,8 +120,6 @@ def get_government_members(government_wikidata_id, max_members=None) -> List[Gov
     return members
 ```
 
-\</details\>
-
 -----
 
 ## 4\. Data Scraping
@@ -189,8 +187,6 @@ head(data_df)
 
 -----
 
-\<details\>
-\<summary\>\<b\>Advanced Development (Original README Sections)\</b\>\</summary\>
 
 ### Search
 
@@ -209,5 +205,3 @@ To run specific tests:
 ```bash
 $ python manage.py test website.test.TestCreateParliament
 ```
-
-\</details\>
