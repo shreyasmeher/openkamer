@@ -205,3 +205,112 @@ To run specific tests:
 ```bash
 $ python manage.py test website.test.TestCreateParliament
 ```
+
+
+```mermaid
+graph TD
+    A[Start: OpenKamer for TWIN4DEM Project] --> B(Project Context: Dutch Parliament Data, Python 3.8, Django 2.2);
+
+    B --> C{1. Prerequisites};
+    C --> C1[macOS Prerequisites];
+    C --> C2[Windows Prerequisites];
+
+    subgraph macOS Setup
+        C1a[Homebrew] --> C1b[Install Tools: git, pyenv, postgresql];
+    end
+
+    subgraph Windows Setup
+        C2a[Install Git] --> C2b[Install Python 3.8.10 (Add to PATH)];
+        C2b --> C2c[Install PostgreSQL];
+    end
+
+    C1b & C2c --> D{2. Installation and Setup};
+    D --> D1[2.1 Get Project Code];
+    D1 --> D2{2.2 Create & Activate Virtual Environment};
+
+    subgraph Virtual Environment Setup
+        D2_mac_a[macOS: pyenv install 3.8.18 & pyenv local] --> D2_mac_b[macOS: python -m venv env & source activate];
+        D2_win_a[Windows: py -3.8 -m venv env] --> D2_win_b[Windows: .\env\Scripts\activate];
+        D2_mac_b & D2_win_b --> D2_verify(Verification: python --version == Python 3.8.x);
+    end
+
+    D2_verify --> D3[2.3 Install Dependencies];
+    D3 --> D4[2.4 Initialize Database (db.sqlite3)];
+    D4 --> D5[2.5 Create Local Settings];
+
+    D5 --> E{3. Runtime Fix for Wikidata Scraper};
+    E --> E1[Open wikidata/government.py];
+    E1 --> E2[Replace get_government_members function];
+
+    E2 --> F{4. Data Scraping};
+    F --> F1[Run Scraper: scrape_range 2010-2024];
+    F1 --> F2(Scraping in progress...);
+
+    F2 --> G{5. Running Web Application};
+    G --> G1(Note: Wait for Scraping to Complete);
+    G1 --> G2[Open New Terminal & Activate Env];
+    G2 --> G3[Run Server: python manage.py runserver];
+    G3 --> G4(App available at [http://127.0.0.1:8000](http://127.0.0.1:8000));
+
+    G4 --> H{6. Accessing the Data};
+    H --> H1[Data in db.sqlite3 file];
+    H1 --> H2a[Viewing: DB Browser for SQLite];
+    H1 --> H2b[Accessing with Code: Python/Pandas or R/RSQLite];
+
+    H --> I[End: Project Setup & Data Available];
+
+    subgraph Additional Capabilities
+        J[Search (Apache Solr)]
+        K[Testing (python manage.py test)]
+    end
+
+    I --> J;
+    I --> K;
+
+    %% Styling for better readability and visual distinction
+    style A fill:#D0F0C0,stroke:#3C803C,stroke-width:2px,color:#000
+    style B fill:#E0E0FF,stroke:#6A5ACD,stroke-width:1px,color:#000
+
+    style C fill:#F9E79F,stroke:#D35400,stroke-width:2px,color:#000
+    style C1 fill:#D6EAF8,stroke:#2874A6,stroke-width:1px,color:#000
+    style C2 fill:#D6EAF8,stroke:#2874A6,stroke-width:1px,color:#000
+    style C1a fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style C1b fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style C2a fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style C2b fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style C2c fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+
+    style D fill:#F9E79F,stroke:#D35400,stroke-width:2px,color:#000
+    style D1 fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style D2 fill:#D6EAF8,stroke:#2874A6,stroke-width:1px,color:#000
+    style D2_mac_a fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style D2_mac_b fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style D2_win_a fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style D2_win_b fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style D2_verify fill:#FFFFCC,stroke:#DAA520,stroke-width:1px,color:#000
+    style D3 fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style D4 fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style D5 fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+
+    style E fill:#F9E79F,stroke:#D35400,stroke-width:2px,color:#000
+    style E1 fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style E2 fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+
+    style F fill:#F9E79F,stroke:#D35400,stroke-width:2px,color:#000
+    style F1 fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style F2 fill:#FFFFCC,stroke:#DAA520,stroke-width:1px,color:#000
+
+    style G fill:#F9E79F,stroke:#D35400,stroke-width:2px,color:#000
+    style G1 fill:#FFFFCC,stroke:#DAA520,stroke-width:1px,color:#000
+    style G2 fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style G3 fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style G4 fill:#FFFFCC,stroke:#DAA520,stroke-width:1px,color:#000
+
+    style H fill:#F9E79F,stroke:#D35400,stroke-width:2px,color:#000
+    style H1 fill:#D6EAF8,stroke:#2874A6,stroke-width:1px,color:#000
+    style H2a fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+    style H2b fill:#E8F8F5,stroke:#1ABC9C,stroke-width:1px,color:#000
+
+    style I fill:#D0F0C0,stroke:#3C803C,stroke-width:2px,color:#000
+    style J fill:#C9E3F3,stroke:#1C6EA4,stroke-width:1px,color:#000
+    style K fill:#C9E3F3,stroke:#1C6EA4,stroke-width:1px,color:#000
