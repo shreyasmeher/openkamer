@@ -102,6 +102,8 @@ A mandatory fix is required to handle changes in the live Wikidata API.
 1.  **Open the file:** `wikidata/government.py`.
 2.  **Replace** the entire `get_government_members` function with the code below to prevent crashes from empty API responses.
 
+<!-- end list -->
+
 ```python
 def get_government_members(government_wikidata_id, max_members=None) -> List[GovernmentMemberData]:
     logger.info('BEGIN')
@@ -187,22 +189,37 @@ head(data_df)
 
 -----
 
+## 7\. Data Overview: What is Scraped?
 
-### Search
+The scraping script gathers data from multiple sources (primarily Wikidata and `overheid.nl`) and links them together. The process occurs in distinct stages, populating your database with the following categories of information:
 
-This project can be configured to use Apache Solr for search. Instructions are based on [https://github.com/dekanayake/haystack\_solr6](https://github.com/dekanayake/haystack_solr6).
+#### Foundational Political Data
 
-### Testing
+This initial stage scrapes structural information, mostly from Wikidata.
 
-To run the full test suite:
+  * **Persons:** Members of Parliament (MPs) and government members.
+  * **Political Parties:** Names, founding dates, and dissolution dates.
+  * **Government Cabinets:** Details of each Dutch cabinet (e.g., "Rutte IV"), including its start and end dates.
+  * **Government Members:** The specific ministers and state secretaries within each cabinet, their positions, and their tenure.
 
-```bash
-$ python manage.py test
-```
+#### Legislative Dossiers
 
-To run specific tests:
+This stage scrapes all legislative files from `overheid.nl`. A "dossier" is a container for all documents related to a single legislative process.
 
-```bash
-$ python manage.py test website.test.TestCreateParliament
-```
+  * **Dossier Metadata:** The title, status, and associated number.
+  * **Associated Documents:** For each dossier, it downloads all related parliamentary documents (`Kamerstukken`), which can include:
+      * Legislative Bills / Proposals (`Voorstel van wet`)
+      * Explanatory Memorandums (`Memorie van toelichting`)
+      * Amendments (`Amendement`)
+      * Reports (`Verslag`)
+      * Motions (`Motie`)
 
+#### Parliamentary Questions (`Kamervragen`)
+
+This is the longest stage, where the scraper iterates through the user-specified date range (e.g., 2010-2024).
+
+  * **Question Details:** The full text of written questions submitted by MPs.
+  * **Answers:** The corresponding answers from the responsible minister or state secretary.
+  * **Metadata:** The submitter(s), recipient, and associated dates for both the question and the answer.
+
+All of this information is cross-referenced and stored in different tables within the `db.sqlite3` database. For example, a `Person` is linked to the `Motions` they submitted, which are in turn linked to the `Dossier` they belong to.
